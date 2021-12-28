@@ -182,9 +182,6 @@ def loadDatasetDates():
 
     session.close()
 
-    # return (recent_date, previous_year_date)
-
-
 if __name__ == "__main__":
     loadDatasetDates()
     app.run(debug=True)
