@@ -76,7 +76,9 @@ def stations():
     stationDF = {}
     for id, station in resultSet:
         stationDF[id] = station
-    
+
+    print(stationDF)
+      
     return jsonify(stationDF)
 
 
@@ -86,6 +88,7 @@ def tobs():
     # Returns JSON results for the temperature observations page
     session = Session(engine)
 
+    # Fetch Active Station
     stationSummary = session.query(Measurement.station, Station.name, func.count(Measurement.id).label('count'))\
                                     .join(Station, Measurement.station == Station.station)\
                                     .group_by(Measurement.station)\
@@ -93,22 +96,27 @@ def tobs():
                                     .all()
 
     activeStationID = stationSummary[0][0]
+    activeStationName = stationSummary[0][1]
 
+    #  Fetch Temperature observations for the most active station
     resultSet = session.query(Measurement.date, Measurement.tobs) \
                             .filter(Measurement.station == activeStationID)\
                             .filter(Measurement.date >= previous_year_date)\
                             .all()
 
     session.close()
+  
+    # Add Active station to the dictionary. 
+    # Added a space in the front of the key --> so it appears before the date key
+    tobsDF = {" Active Station ID": activeStationID, " Active Station Name": activeStationName}
 
-    tobsDF = {}
     for date, tobs in resultSet:
         tobsDF[date] = tobs
-    
+
     return jsonify(tobsDF)
 
 
-# Summary by Start Date page
+# Summary temperature observations by Start Date page
 @app.route("/api/v1.0/<start>")
 def SummaryByStartDate(start):
     # Returns JSON results for the Summary page by start date to show Minimum, Maximum and Average temperature observations
@@ -124,16 +132,16 @@ def SummaryByStartDate(start):
     session.close()
 
     return (
-        f"======================================================<br>"
-        f"SUMMARY - Start date: {startDate} and End date: {endDate}<br>"
-        f"======================================================<br>"
-        f"Min temp {resultSet[0]:.2f}<br>"
-        f"Max temp {resultSet[2]:.2f}<br>"
-        f"Avg temp {resultSet[1]:.2f}<br>"
-        f"======================================================<br>"
+        f"==============================================<br>"
+        f"SUMMARY - Start date: {startDate} & End date: {endDate}<br>"
+        f"==============================================<br>"
+        f"Minimum temperature: {resultSet[0]:.2f}<br>"
+        f"Maximum temperature: {resultSet[1]:.2f}<br>"
+        f"Average temperature: {resultSet[2]:.2f}<br>"
+        f"==============================================<br>"
         )
 
-# Summary by Start and End Dates page
+# Summary temperature observations by Start and End Dates page
 @app.route("/api/v1.0/<start>/<end>")
 def SummaryByStartEndDate(start, end):
     # Returns JSON results for the Summary page by start date and end date to show Minimum, Maximum and Average temperature observations
@@ -150,13 +158,13 @@ def SummaryByStartEndDate(start, end):
     session.close()
 
     return (
-        f"======================================================<br>"
-        f"SUMMARY - Start date: {startDate} and End date: {endDate}<br>"
-        f"======================================================<br>"
-        f"Min temp {resultSet[0]:.2f}<br>"
-        f"Max temp {resultSet[2]:.2f}<br>"
-        f"Avg temp {resultSet[1]:.2f}<br>"
-        f"======================================================<br>"
+        f"==============================================<br>"
+        f"SUMMARY - Start date: {startDate} & End date: {endDate}<br>"
+        f"==============================================<br>"
+        f"Minimum temperature: {resultSet[0]:.2f}<br>"
+        f"Maximum temperature: {resultSet[1]:.2f}<br>"
+        f"Average temperature: {resultSet[2]:.2f}<br>"
+        f"==============================================<br>"
         )
 
 
@@ -166,11 +174,11 @@ def loadDatasetDates():
 
     global recent_date
     recent_date = session.query(Measurement.date).order_by(Measurement.date.desc()).first()[0]
-    print(f"Most recent date in Dataset {recent_date}")
+    print(f"Most recent date in Dataset: {recent_date}")
 
     global previous_year_date
     previous_year_date = dt.strptime(recent_date, "%Y-%m-%d") + relativedelta(years=-1)
-    print(f"Previous year date for most recent date {previous_year_date}")
+    print(f"Previous year date for most recent date: {previous_year_date}")
 
     session.close()
 
