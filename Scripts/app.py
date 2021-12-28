@@ -42,7 +42,7 @@ def index():
                 f"/api/v1.0/stations<br>"
                 f"/api/v1.0/tobs<br>"
                 f"/api/v1.0/< start >  <i>(Date format should be yyyy-mm-dd)</i><br>"
-                f"/api/v1.0/< start > < end > <i>(Date format should be yyyy-mm-dd)</i><br>"
+                f"/api/v1.0/< start > / < end > <i>(Date format should be yyyy-mm-dd)</i><br>"
                 )
 
 
@@ -124,10 +124,13 @@ def SummaryByStartDate(start):
     session.close()
 
     return (
-        f'Start date: {startDate} - End date: {endDate}<br>'
+        f"======================================================<br>"
+        f"SUMMARY - Start date: {startDate} and End date: {endDate}<br>"
+        f"======================================================<br>"
         f"Min temp {resultSet[0]:.2f}<br>"
         f"Max temp {resultSet[2]:.2f}<br>"
         f"Avg temp {resultSet[1]:.2f}<br>"
+        f"======================================================<br>"
         )
 
 # Summary by Start and End Dates page
@@ -147,10 +150,13 @@ def SummaryByStartEndDate(start, end):
     session.close()
 
     return (
-        f'Start date: {startDate} - End date: {endDate}<br>'
+        f"======================================================<br>"
+        f"SUMMARY - Start date: {startDate} and End date: {endDate}<br>"
+        f"======================================================<br>"
         f"Min temp {resultSet[0]:.2f}<br>"
         f"Max temp {resultSet[2]:.2f}<br>"
         f"Avg temp {resultSet[1]:.2f}<br>"
+        f"======================================================<br>"
         )
 
 
