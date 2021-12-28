@@ -1,6 +1,6 @@
 # Climate-Analysis-sqlalchemy-challenge
 
-Challenge is performed using SQLAlchemy, Pandas, matplotlib and datetime. climate analysis and data exploration of the Hawaii Weather data. 
+Challenge is performed using SQLAlchemy, Pandas, matplotlib and datetime on climate analysis and data exploration of the Hawaii Weather data. 
 
 ---
 
